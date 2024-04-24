@@ -8,6 +8,7 @@ import { Card, CardContent, CardMedia, Switch, Typography } from "@mui/material"
 import Box from '@mui/material/Box';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LikedPage from './components/likedPage';
+import MainPage from './components/mainPage';
 
 
 function App() {
@@ -17,6 +18,8 @@ function App() {
   const handleSubmit = async (term) => {
     const result = await searchImages(term);
     setImages(result);
+    console.log('result', images);
+    
   }
 
   const toggleDarkTheme = () => {
@@ -47,18 +50,34 @@ function App() {
     },
   });
 
+  // return (
+  //   <ThemeProvider theme={toggleDarkMode ? darkTheme : lightTheme}>
+  //     <CssBaseline />
+  //     <Router>
+  //     <Routes>
+  //       <Route path="/liked" element={<LikedPage />} />
+  //     </Routes>
+  //       {/* <Switch checked={toggleDarkMode} onChange={toggleDarkTheme} /> */}
+  //     <Header onSubmit={handleSubmit} handleToggleTheme={toggleDarkTheme} toggleTheme={toggleDarkMode} />
+  //     <Box sx={{ mt: 9 }}>
+  //       <ImageList images={images}/>
+  //     </Box>
+  //     </Router> 
+  //   </ThemeProvider>
+  // );
+
   return (
     <ThemeProvider theme={toggleDarkMode ? darkTheme : lightTheme}>
       <CssBaseline />
       <Router>
-      <Routes>
-        <Route path="/liked" element={<LikedPage />} />
-      </Routes>
-        {/* <Switch checked={toggleDarkMode} onChange={toggleDarkTheme} /> */}
-      <Header onSubmit={handleSubmit} handleToggleTheme={toggleDarkTheme} toggleTheme={toggleDarkMode} />
-      <Box sx={{ mt: 9 }}>
-        <ImageList images={images}/>
-      </Box>
+        <Routes>
+          <Route path="/liked" element={<LikedPage />} />
+          <Route path="/" element={<MainPage images={images} />} />
+        </Routes>
+        <Header onSubmit={handleSubmit} handleToggleTheme={toggleDarkTheme} toggleTheme={toggleDarkMode} />
+        {/* <Box sx={{ mt: 9 }}>
+          <ImageList images={images}/>
+        </Box> */}
       </Router> 
     </ThemeProvider>
   );

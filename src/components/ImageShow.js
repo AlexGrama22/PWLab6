@@ -2,7 +2,6 @@ import { Box } from '@mui/system';
 
 
 function ImageShow (image) {
-  console.log('img prev', image);
     return <div>
       {/* <img src={image.urls.regular} alt={image.alt_description} /> */}
       <Box height={209} display="flex" justifyContent="center" alignItems="center" overflow={'hidden'} >
