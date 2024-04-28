@@ -15,6 +15,7 @@ import Brightness7Icon from '@mui/icons-material/Brightness7';
 import Drawer from './Drawer';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import Hidden from '@mui/material/Hidden';
 
 const Search = styled('form')(({ theme }) => ({
   position: 'relative',
@@ -89,7 +90,9 @@ export default function SearchAppBar({ onSubmit, toggleTheme, handleToggleTheme 
             MUI
           </Typography>
           {/* <ColorSwich onPress={toggleTheme} handleChangeColor={handleToggleTheme} /> */}
-          {theme.palette.mode} mode
+          <Hidden smDown>
+            <div>{theme.palette.mode} mode </div>
+        </Hidden>
           <IconButton sx={{ ml: 1 }} onClick={handleToggleTheme} color="inherit">
             {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
           </IconButton>
