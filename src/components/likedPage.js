@@ -30,6 +30,7 @@ function LikedPage() {
     const updatedImages = likedImages.filter(item => item.image.id !== imageId);
     setLikedImages(updatedImages);
     localStorage.setItem('likedImages', JSON.stringify(updatedImages));
+    window.dispatchEvent(new Event('storageUpdate'));
   };
 
   return (

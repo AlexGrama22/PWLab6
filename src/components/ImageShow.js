@@ -10,7 +10,18 @@ function ImageShow({ image }) {
     const likedImages = JSON.parse(localStorage.getItem('likedImages')) || [];
     const isLiked = likedImages.some(img => img.id === image.id);
     setLiked(isLiked);
-    console.log('Initial load, isLiked:', isLiked); 
+    
+    const handleStorageUpdate = () => {
+      const likedImages = JSON.parse(localStorage.getItem('likedImages')) || [];
+      const isLiked = likedImages.some(img => img.image.id === image.id);
+      setLiked(isLiked);
+    };
+  
+    window.addEventListener('storageUpdate', handleStorageUpdate);
+    handleStorageUpdate();
+    return () => {
+      window.removeEventListener('storageUpdate', handleStorageUpdate);
+    };
   }, [image.id]);
 
 const handleLike = () => {
