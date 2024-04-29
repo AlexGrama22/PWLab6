@@ -16,11 +16,13 @@ function App() {
   const [toggleDarkMode, setToggleDarkMode] = useState(true);
 
   const handleSubmit = async (term) => {
-    const result = await searchImages(term);
-    setImages(result);
-    console.log('result', images);
-    
-  }
+    if (term.trim() === '') {
+        setImages([]); // Sets images to an empty array if term is empty
+    } else {
+        const result = await searchImages(term); // Calls the API to fetch images
+        setImages(result); // Updates the images state with the result
+    }
+}
 
   const toggleDarkTheme = () => {
     setToggleDarkMode(!toggleDarkMode);
@@ -74,7 +76,12 @@ function App() {
           <Route path="/liked" element={<LikedPage />} />
           <Route path="/" element={<MainPage images={images} />} />
         </Routes>
-        <Header onSubmit={handleSubmit} handleToggleTheme={toggleDarkTheme} toggleTheme={toggleDarkMode} />
+        <Header
+          onSubmit={handleSubmit}
+          handleToggleTheme={toggleDarkTheme}
+          toggleTheme={toggleDarkMode}
+          setImages={setImages} // Pass setImages as a prop
+        />
         {/* <Box sx={{ mt: 9 }}>
           <ImageList images={images}/>
         </Box> */}

@@ -59,7 +59,11 @@ function LikedPage() {
           </ImageListItem>
         ))}
       </ImageList>
-      {likedImages.length === 0 && <div>No liked images to display.</div>}
+      {likedImages.length === 0 && 
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '90vh', width: '100vw' }}>
+              <h2>No liked images to display.</h2>
+          </div>
+      }
     </Box>
   );
 }

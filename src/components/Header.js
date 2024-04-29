@@ -61,16 +61,19 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 
 
-export default function SearchAppBar({ onSubmit, toggleTheme, handleToggleTheme }) {
+export default function SearchAppBar({ onSubmit, toggleTheme, handleToggleTheme, setImages }) {
     const [term, setTerm] = useState('');
     const theme = useTheme();
     const location = useLocation();
 
     const handleFormSubmit = (event) => {
-        event.preventDefault();
-        onSubmit(term);
-
-    }
+      event.preventDefault();
+      if (term.trim() === '') {
+          setImages([]); 
+      } else {
+          onSubmit(term); 
+      }
+  }
 
     const handleChange = (event) => {
         setTerm(event.target.value);
