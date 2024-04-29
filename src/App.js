@@ -1,90 +1,57 @@
-import ImageList from "./components/ImageList";
+// App.js
+
 import React, { useState } from 'react';
-import searchImages from "./api";
-import Header from "./components/Header";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import { Card, CardContent, CardMedia, Switch, Typography } from "@mui/material"
-import Box from '@mui/material/Box';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LikedPage from './components/likedPage';
-import MainPage from './components/mainPage';
 
+import Header from "./components/Header";
+import MainPage from './components/mainPage';
+import LikedPage from './components/likedPage';
+
+import searchImages from "./api"; // Make sure this path is correct
 
 function App() {
   const [images, setImages] = useState([]);
   const [toggleDarkMode, setToggleDarkMode] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleSubmit = async (term) => {
+    setSearchTerm(term);
     if (term.trim() === '') {
-        setImages([]); // Sets images to an empty array if term is empty
+      setImages([]); // Clears images if search term is empty
     } else {
-        const result = await searchImages(term); // Calls the API to fetch images
-        setImages(result); // Updates the images state with the result
+      const result = await searchImages(term); // Assuming this is an async call to fetch images based on the term
+      setImages(result);
     }
-}
+  }
 
   const toggleDarkTheme = () => {
     setToggleDarkMode(!toggleDarkMode);
   };
 
-  const darkTheme = createTheme({
+  const theme = createTheme({
     palette: {
-      mode: 'dark',
-      primary: {
-        main: '#90caf9',
-      },
-      secondary: {
-        main: '#f48fb1',
-      },
+      mode: toggleDarkMode ? 'dark' : 'light',
+      primary: { main: '#90caf9' },
+      secondary: { main: '#f48fb1' },
     },
   });
-
-  const lightTheme = createTheme({
-    palette: {
-      mode: 'light',
-      primary: {
-        main: '#90caf9',
-      },
-      secondary: {
-        main: '#f48fb1',
-      },
-    },
-  });
-
-  // return (a
-  //   <ThemeProvider theme={toggleDarkMode ? darkTheme : lightTheme}>
-  //     <CssBaseline />
-  //     <Router>
-  //     <Routes>
-  //       <Route path="/liked" element={<LikedPage />} />
-  //     </Routes>
-  //       {/* <Switch checked={toggleDarkMode} onChange={toggleDarkTheme} /> */}
-  //     <Header onSubmit={handleSubmit} handleToggleTheme={toggleDarkTheme} toggleTheme={toggleDarkMode} />
-  //     <Box sx={{ mt: 9 }}>
-  //       <ImageList images={images}/>
-  //     </Box>
-  //     </Router> 
-  //   </ThemeProvider>
-  // );
 
   return (
-    <ThemeProvider theme={toggleDarkMode ? darkTheme : lightTheme}>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <Routes>
-          <Route path="/liked" element={<LikedPage />} />
-          <Route path="/" element={<MainPage images={images} />} />
-        </Routes>
         <Header
           onSubmit={handleSubmit}
           handleToggleTheme={toggleDarkTheme}
           toggleTheme={toggleDarkMode}
-          setImages={setImages} // Pass setImages as a prop
+          setImages={setImages} // Ensures Header can clear images
         />
-        {/* <Box sx={{ mt: 9 }}>
-          <ImageList images={images}/>
-        </Box> */}
+        <Routes>
+          <Route path="/liked" element={<LikedPage />} />
+          <Route path="/" element={<MainPage images={images} searchTerm={searchTerm} />} />
+        </Routes>
       </Router> 
     </ThemeProvider>
   );

@@ -69,7 +69,7 @@ export default function SearchAppBar({ onSubmit, toggleTheme, handleToggleTheme,
     const handleFormSubmit = (event) => {
       event.preventDefault();
       if (term.trim() === '') {
-          setImages([]); 
+          setImages([]); // Clears the images if the search term is empty
       } else {
           onSubmit(term); 
       }
