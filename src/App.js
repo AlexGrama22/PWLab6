@@ -19,9 +19,9 @@ function App() {
   const handleSubmit = async (term) => {
     setSearchTerm(term);
     if (term.trim() === '') {
-      setImages([]); // Clears images if search term is empty
+      setImages([]);
     } else {
-      const result = await searchImages(term); // Assuming this is an async call to fetch images based on the term
+      const result = await searchImages(term);
       setImages(result);
     }
   }
@@ -50,8 +50,7 @@ function App() {
         />
         <Routes>
           <Route path="/liked" element={<LikedPage />} />
-          <Route path="/" element={<MainPage images={images} searchTerm={searchTerm} />} />
-        </Routes>
+          <Route path="/" element={<MainPage images={images} searchTerm={searchTerm} onSearch={handleSubmit} />} />        </Routes>
       </Router> 
     </ThemeProvider>
   );
