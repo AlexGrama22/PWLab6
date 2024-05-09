@@ -10,7 +10,8 @@ import MainPage from './components/mainPage';
 import LikedPage from './components/likedPage';
 import UserData from './components/UserData';
 import Login from './components/Login';
-import searchImages from "./api";
+import { searchImages } from './api';
+
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token') || '');

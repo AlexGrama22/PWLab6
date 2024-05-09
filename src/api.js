@@ -35,11 +35,17 @@ customAPI.interceptors.request.use((config) => {
 
 // Search images from Unsplash
 export const searchImages = async (term) => {
-    const response = await unsplashAPI.get("/", {
-        params: { query: term, per_page: 30 }
-    });
-    return response.data.results;
+    try {
+        const response = await unsplashAPI.get("/", {
+            params: { query: term, per_page: 30 }
+        });
+        return response.data.results; // Make sure to return the results
+    } catch (error) {
+        console.error("Error fetching images:", error);
+        throw error;
+    }
 };
+
 
 
 export const fetchUserData = async () => {
@@ -52,7 +58,7 @@ export const fetchUserData = async () => {
         }
     } catch (error) {
         console.error("API call error: ", error.message);
-        throw error;  // rethrow the error to be handled or displayed by the calling component
+        throw error;  
     }
 };
 
