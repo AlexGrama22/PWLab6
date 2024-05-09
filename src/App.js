@@ -12,6 +12,7 @@ import LikedPage from './components/likedPage';
 import searchImages from "./api"; // Make sure this path is correct
 
 function App() {
+  const [token, setToken] = useState(localStorage.getItem('token') || '');
   const [images, setImages] = useState([]);
   const [toggleDarkMode, setToggleDarkMode] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');

@@ -1,9 +1,20 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();  // Ensure the .env file is loaded to use environment variables
+require('dotenv').config();  
 
 const app = express();
-app.use(express.json());  // Middleware to parse JSON bodies
+app.use(express.json());  
+
+const users = {
+    'admin': { password: 'admin', role: 'ADMIN' },
+    'visitor': { password: 'visitorpass', role: 'VISITOR' }
+};
+
+const permissions = {
+    ADMIN: ["READ", "WRITE"],
+    VISITOR: ["READ"]
+};
+
 
 // Middleware to authenticate JWT
 function authenticateToken(req, res, next) {
@@ -18,8 +29,8 @@ function authenticateToken(req, res, next) {
         if (err) {
             return res.sendStatus(403);  // Token verification failed
         }
-        req.user = user;  // Set the user info for downstream use
-        next();  // Continue to the next middleware or route handler
+        req.user = user;  
+        next(); 
     });
 }
 
@@ -62,3 +73,21 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
+
+
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    const user = users[username];
+
+    if (user && user.password === password) {
+        const token = jwt.sign(
+            { username, role: user.role, permissions: permissions[user.role] },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' } 
+        );
+        return res.json({ token });
+    } else {
+        return res.status(401).json({ error: 'Invalid username or password' });
+    }
+});
+
