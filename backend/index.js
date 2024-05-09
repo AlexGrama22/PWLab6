@@ -51,15 +51,15 @@ app.post('/token', (req, res) => {
     };
 
     if (!permissions[role]) {
-        console.log("Role received: ", role); // This will show what role is received
-        console.log("Available permissions: ", permissions); // This shows available roles and permissions
+        console.log("Role received: ", role);
+        console.log("Available permissions: ", permissions);
         return res.status(400).json({ error: "Invalid role" });
     }
 
     const token = jwt.sign(
         { role, permissions: permissions[role] },
         process.env.JWT_SECRET,
-        { expiresIn: '10m' }
+        { expiresIn: '1m' }
     );
 
     res.json({ token });
@@ -86,15 +86,20 @@ app.post('/login', (req, res) => {
 
     if (user && user.password === password) {
         const token = jwt.sign(
-            { username, role: user.role, permissions: permissions[user.role] },
+            {
+                username, 
+                role: user.role,
+                permissions: permissions[user.role]
+            },
             process.env.JWT_SECRET,
-            { expiresIn: '1h' } 
+            { expiresIn: '1h' }  
         );
-        return res.json({ token });
+        return res.json({ token, username });
     } else {
         return res.status(401).json({ error: 'Invalid username or password' });
     }
 });
+
 
 
 app.get('/user-data', authenticateToken, (req, res) => {

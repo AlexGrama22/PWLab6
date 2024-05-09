@@ -1,5 +1,3 @@
-// MainPage.js
-
 import React from 'react';
 import Box from '@mui/material/Box';
 import ImageList from "./ImageList";

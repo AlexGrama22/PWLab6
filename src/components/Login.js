@@ -15,13 +15,17 @@ const Login = ({ setToken }) => {
                 username,
                 password
             });
-            console.log('Login response:', response.data); // Debug: Check the response structure
-            const { token } = response.data;
+            console.log("Login response:", response.data);
+            const { token, username: responseUsername } = response.data;
+            console.log('Received from login:', response.data);  // Check what's coming back from the server
+            localStorage.setItem('token', token);
+            localStorage.setItem('username', responseUsername);
+            console.log('Saved username:', localStorage.getItem('username')); // Immediately check if it's stored correctly            
             if (token) {
-                console.log('Setting token and redirecting...'); // Debug
+                console.log('Setting token and redirecting...');
                 setToken(token);
                 localStorage.setItem('token', token);
-                navigate('/'); // Redirect to the home page or dashboard
+                navigate('/'); 
             } else {
                 console.error('No token received');
             }

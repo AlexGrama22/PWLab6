@@ -1,10 +1,7 @@
-// App.js
-
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate  } from 'react-router-dom';
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-
 import Header from "./components/Header";
 import MainPage from './components/mainPage';
 import LikedPage from './components/likedPage';
@@ -42,6 +39,10 @@ function App() {
     },
   });
 
+  const requireAuth = (element) => {
+    return token ? element : <Navigate to="/login" replace />;
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -52,13 +53,12 @@ function App() {
           toggleTheme={toggleDarkMode}
           setImages={setImages} // Ensures Header can clear images
         />
-        <Routes>
-        <Route path="/login" element={<Login setToken={setToken} />} />
-          <Route path="/liked" element={<LikedPage />} />
-          <Route path="/" element={<MainPage images={images} searchTerm={searchTerm} onSearch={handleSubmit} />} />        
-          <Route path="/user-data" element={token ? <UserData /> : <Navigate to="/login" />} />
-
-          </Routes>
+         <Routes>
+          <Route path="/login" element={<Login setToken={setToken} />} />
+          <Route path="/" element={requireAuth(<MainPage images={images} searchTerm={searchTerm} onSearch={handleSubmit} />)} />
+          <Route path="/liked" element={requireAuth(<LikedPage />)} />
+          <Route path="/user-data" element={requireAuth(<UserData />)} />
+        </Routes>
       </Router> 
     </ThemeProvider>
   );
