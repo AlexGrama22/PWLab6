@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import Box from '@mui/material/Box';
 
 const Login = ({ setToken }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -12,35 +15,43 @@ const Login = ({ setToken }) => {
                 username,
                 password
             });
+            console.log('Login response:', response.data); // Debug: Check the response structure
             const { token } = response.data;
-            setToken(token);  
-            localStorage.setItem('token', token); 
+            if (token) {
+                console.log('Setting token and redirecting...'); // Debug
+                setToken(token);
+                localStorage.setItem('token', token);
+                navigate('/'); // Redirect to the home page or dashboard
+            } else {
+                console.error('No token received');
+            }
         } catch (error) {
-            console.error('Error logging in:', error.response.data);
-
+            console.error('Error logging in:', error.response ? error.response.data : error);
         }
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label>Username:</label>
-                <input
-                    type="text"
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
-                />
-            </div>
-            <div>
-                <label>Password:</label>
-                <input
-                    type="password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                />
-            </div>
-            <button type="submit">Login</button>
-        </form>
+        <Box sx={{mt:10}}>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label>Username:</label>
+                    <input
+                        type="text"
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                    />
+                </div>
+                <div>
+                    <label>Password:</label>
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                    />
+                </div>
+                <button type="submit">Login</button>
+            </form>
+        </Box>
     );
 };
 

@@ -1,5 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 require('dotenv').config();  
 
 const app = express();
@@ -15,7 +16,7 @@ const permissions = {
     VISITOR: ["READ"]
 };
 
-
+app.use(cors());
 // Middleware to authenticate JWT
 function authenticateToken(req, res, next) {
     const authHeader = req.headers.authorization;
@@ -90,4 +91,14 @@ app.post('/login', (req, res) => {
         return res.status(401).json({ error: 'Invalid username or password' });
     }
 });
+
+
+app.get('/user-data', authenticateToken, (req, res) => {
+    if (!req.user) {
+        return res.status(403).json({ error: "Access Forbidden" });
+    } else {
+        res.json({ username: req.user.username, role: req.user.role, permissions: req.user.permissions });
+    }
+});
+
 
