@@ -44,18 +44,18 @@ const handleLike = () => {
 
 
   return (
-    <div>
-      <Box height={209} display="flex" justifyContent="center" alignItems="center" overflow="hidden" onMouseEnter={() => setIsHovered(true)}
+    <Box sx={{width:"auto"}}>
+      <Box height={200} display="flex" justifyContent="center" alignItems="center" onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}>
         <Box component="img" src={image.urls.regular} alt={image.alt_description} sx={{ width: '100%', height: '100%', objectFit: 'cover' }}/>
         {isHovered && 
         <Box sx={{position: 'absolute', bottom: '0', left:'0', display:"flex", justifyContent:"center", width:"100%"}}>
         <Grid container sx={{}} >
           <Grid item xs={4} sx={{display:"flex", justifyContent:"center", alignItems:"center"}}>
-            <Button variant="contained" color="primary" href={image.links.download} target="_blank" sx={{ mt: 1 }}><DownloadForOfflineIcon/></Button>
+            <Button variant="contained" color="primary" href={image.links.download} target="_blank" sx={{  }}><DownloadForOfflineIcon/></Button>
           </Grid>
           <Grid item xs={4} sx={{display:"flex", justifyContent:"center", alignItems:"center"}}>
-            <Button variant="contained" color="primary" onClick={handleLike} sx={{mt:1, }}>
+            <Button variant="contained" color="primary" onClick={handleLike} sx={{ }}>
               {liked ? <FavoriteIcon color="secondary" /> : <FavoriteIcon />}
             </Button>
           </Grid>
@@ -70,7 +70,7 @@ const handleLike = () => {
         </Box>
         }
       </Box>
-    </div>
+    </Box>
   );
 }
 

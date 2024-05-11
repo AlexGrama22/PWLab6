@@ -17,9 +17,9 @@ function ImageListComp({ images, isAdmin, onDelete }) {
 
 
   return (
-    <ImageList sx={{ width: '100%', height: '100%' }} cols={cols} rowHeight={164}>
+    <ImageList sx={{ width: '100%', height: 'auto', overflow:"visible" }} cols={cols} rowHeight={200}>
       {images.map((image) => (
-        <ImageListItem key={image.id}>
+        <ImageListItem key={image.id} sx={{width:"auto"}}>
           <ImageShow image={image} isAdmin={isAdmin} onDelete={onDelete} />
         </ImageListItem>
       ))}

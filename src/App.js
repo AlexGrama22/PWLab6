@@ -16,12 +16,12 @@ function App() {
   const [toggleDarkMode, setToggleDarkMode] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const handleSubmit = async (term) => {
+  const handleSubmit = async (term, page = 1) => {
     setSearchTerm(term);
     if (term.trim() === '') {
       setImages([]);
     } else {
-      const result = await searchImages(term);
+      const result = await searchImages(term, page); 
       setImages(result);
     }
   }

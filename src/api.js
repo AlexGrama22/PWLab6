@@ -34,10 +34,10 @@ customAPI.interceptors.request.use((config) => {
 });
 
 // Search images from Unsplash
-export const searchImages = async (term) => {
+export const searchImages = async (term, page) => {
     try {
         const response = await unsplashAPI.get("/", {
-            params: { query: term, per_page: 30 }
+            params: { query: term, per_page: 30, page: page }
         });
         return response.data.results; // Make sure to return the results
     } catch (error) {
