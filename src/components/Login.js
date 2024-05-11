@@ -16,10 +16,12 @@ const Login = ({ setToken }) => {
                 password
             });
             console.log("Login response:", response.data);
-            const { token, username: responseUsername } = response.data;
+            const { token, username: responseUsername, role } = response.data;
             console.log('Received from login:', response.data);  // Check what's coming back from the server
             localStorage.setItem('token', token);
             localStorage.setItem('username', responseUsername);
+            localStorage.setItem('role', role);
+            console.log('Saved role:', localStorage.getItem('role')); // Immediately check if it's stored correctly
             console.log('Saved username:', localStorage.getItem('username')); // Immediately check if it's stored correctly            
             if (token) {
                 console.log('Setting token and redirecting...');

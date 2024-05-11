@@ -25,6 +25,11 @@ function App() {
       setImages(result);
     }
   }
+
+  const handleDelete = (imageId) => {
+    const updatedImages = images.filter(image => image.id !== imageId);
+    setImages(updatedImages);
+  }
   
 
   const toggleDarkTheme = () => {
@@ -55,7 +60,7 @@ function App() {
         />
          <Routes>
           <Route path="/login" element={<Login setToken={setToken} />} />
-          <Route path="/" element={requireAuth(<MainPage images={images} searchTerm={searchTerm} onSearch={handleSubmit} />)} />
+          <Route path="/" element={requireAuth(<MainPage images={images} searchTerm={searchTerm} onSearch={handleSubmit} onDelete={handleDelete} />)} />
           <Route path="/liked" element={requireAuth(<LikedPage />)} />
           <Route path="/user-data" element={requireAuth(<UserData />)} />
         </Routes>

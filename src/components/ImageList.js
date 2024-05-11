@@ -5,7 +5,7 @@ import ImageShow from "./ImageShow";
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-function ImageListComp({ images }) {
+function ImageListComp({ images, isAdmin, onDelete }) {
   const theme = useTheme();
   const md = useMediaQuery(theme.breakpoints.only('md'))
   const xs = useMediaQuery(theme.breakpoints.only('xs'))
@@ -20,7 +20,7 @@ function ImageListComp({ images }) {
     <ImageList sx={{ width: '100%', height: '100%' }} cols={cols} rowHeight={164}>
       {images.map((image) => (
         <ImageListItem key={image.id}>
-          <ImageShow image={image} />
+          <ImageShow image={image} isAdmin={isAdmin} onDelete={onDelete} />
         </ImageListItem>
       ))}
     </ImageList>

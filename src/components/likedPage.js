@@ -10,6 +10,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 function LikedPage() {
   const [likedImages, setLikedImages] = useState([]);
+  const [isHovered, setIsHovered] = useState(false);
   const theme = useTheme();
   const md = useMediaQuery(theme.breakpoints.only('md'));
   const xs = useMediaQuery(theme.breakpoints.only('xs'));
@@ -37,25 +38,30 @@ function LikedPage() {
     <Box sx={{ mt: 9 }}>
       <ImageList sx={{ width: '100%', height: '100%' }} cols={cols} rowHeight={164}>
         {likedImages.map((item) => (
-          <ImageListItem key={item.image.id}>
+          <ImageListItem key={item.image.id} onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}>
             <img
               src={item.image.urls.regular}
               alt={item.image.alt_description}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
-            <Grid container spacing={2} width={'60%'} sx={{position: 'absolute', bottom: '0', right:'0'}}>
-              <Grid item xs={6}>
+            {isHovered &&
+            <Box sx={{position: 'absolute', bottom: '0', left:'0', display:"flex", justifyContent:"center", width:"100%"}}>
+            <Grid container sx={{}} >
+              <Grid item xs={6} sx={{display:"flex", justifyContent:"center", alignItems:"center"}}>
                 <Button variant="contained" color="primary" href={item.image.links.download} target="_blank" sx={{ m: 1 }}>
                   <DownloadForOfflineIcon />
                 </Button>
               </Grid>
-              <Grid item xs={6}>
-                {/* Change the button to call handleDelete when clicked */}
+              <Grid item xs={6} sx={{display:"flex", justifyContent:"center", alignItems:"center"}}>
+
                 <Button variant="contained" color="secondary" onClick={() => handleDelete(item.image.id)} sx={{ m: 1 }}>
                   <DeleteIcon />
                 </Button>
               </Grid>
             </Grid>
+            </Box>
+            }
           </ImageListItem>
         ))}
       </ImageList>

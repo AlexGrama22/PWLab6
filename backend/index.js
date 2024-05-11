@@ -12,7 +12,7 @@ app.use(cors({
 
 const users = {
     'admin': { password: 'admin', role: 'ADMIN' },
-    'visitor': { password: 'visitorpass', role: 'VISITOR' }
+    'user': { password: 'user', role: 'VISITOR' }
 };
 
 const permissions = {
@@ -94,7 +94,7 @@ app.post('/login', (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: '1h' }  
         );
-        return res.json({ token, username });
+        return res.json({ token, username, role: user.role });
     } else {
         return res.status(401).json({ error: 'Invalid username or password' });
     }
