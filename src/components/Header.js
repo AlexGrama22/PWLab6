@@ -13,6 +13,7 @@ import Brightness7Icon from '@mui/icons-material/Brightness7';
 import Drawer from './Drawer';
 import { useLocation } from 'react-router-dom';
 import Hidden from '@mui/material/Hidden';
+import { useAuth } from '../context/AuthContext';
 
 const Search = styled('form')(({ theme }) => ({
   position: 'relative',
@@ -62,6 +63,7 @@ export default function SearchAppBar({ onSubmit, toggleTheme, handleToggleTheme,
     const [term, setTerm] = useState('');
     const theme = useTheme();
     const location = useLocation();
+    const { auth } = useAuth();
 
     const handleFormSubmit = (event) => {
       event.preventDefault();
@@ -96,7 +98,7 @@ export default function SearchAppBar({ onSubmit, toggleTheme, handleToggleTheme,
           <IconButton sx={{ ml: 1 }} onClick={handleToggleTheme} color="inherit">
             {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
           </IconButton>
-          {location.pathname !== '/liked' && (
+          {auth.token && location.pathname !== '/liked' && (
             <Search onSubmit={handleFormSubmit}>
               <SearchIconWrapper>
                 <SearchIcon />

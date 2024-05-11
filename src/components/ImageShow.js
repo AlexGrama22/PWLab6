@@ -68,7 +68,7 @@ const handleLike = () => {
           </Grid>
           {isAdmin && (
             <Grid item xs={4} sx={{display:"flex", justifyContent:"center", alignItems:"center"}}>
-              <Button variant="contained" color="error" onClick={() => onDelete(image.id)} sx={{ mt: 1 }}>
+              <Button variant="contained" color="error" onClick={() => onDelete(image.id)} sx={{ }}>
                 <DeleteIcon />
               </Button>
             </Grid>
