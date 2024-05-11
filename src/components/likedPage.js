@@ -20,17 +20,20 @@ function LikedPage() {
   else if(xs) cols = 1;
   else if(sm) cols = 2;
 
+  const username = localStorage.getItem('username');
+  const likedImagesKey = `${username}-likedImages`;
+
   useEffect(() => {
-    const storedImages = localStorage.getItem('likedImages');
+    const storedImages = localStorage.getItem(likedImagesKey);
     if (storedImages) {
       setLikedImages(JSON.parse(storedImages));
     }
-  }, []);
+  }, [likedImagesKey]);
 
   const handleDelete = (imageId) => {
     const updatedImages = likedImages.filter(item => item.image.id !== imageId);
     setLikedImages(updatedImages);
-    localStorage.setItem('likedImages', JSON.stringify(updatedImages));
+    localStorage.setItem(likedImagesKey, JSON.stringify(updatedImages));
     window.dispatchEvent(new Event('storageUpdate'));
   };
 

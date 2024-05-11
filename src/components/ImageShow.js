@@ -7,28 +7,35 @@ import DeleteIcon from '@mui/icons-material/Delete';
 function ImageShow({ image, onDelete  }) {
   const [liked, setLiked] = useState(false);
   const isAdmin = localStorage.getItem('role') === 'ADMIN';
+  const username = localStorage.getItem('username');
+  const likedImagesKey = `${username}-likedImages`;
   const [isHovered, setIsHovered] = useState(false);
 
+  const getLikedImagesKey = () => {
+    return `${username}-likedImages`;
+  }
+
   useEffect(() => {
-    const likedImages = JSON.parse(localStorage.getItem('likedImages')) || [];
-    const isLiked = likedImages.some(img => img.id === image.id);
+    const likedImages = JSON.parse(localStorage.getItem(likedImagesKey)) || [];
+    const isLiked = likedImages.some(img => img.image.id === image.id);
     setLiked(isLiked);
     
     const handleStorageUpdate = () => {
-      const likedImages = JSON.parse(localStorage.getItem('likedImages')) || [];
-      const isLiked = likedImages.some(img => img.image.id === image.id);
-      setLiked(isLiked);
-    };
+      const updatedLikedImages = JSON.parse(localStorage.getItem(likedImagesKey)) || [];
+      const updatedIsLiked = updatedLikedImages.some(img => img.image.id === image.id);
+      setLiked(updatedIsLiked);
+    }
   
     window.addEventListener('storageUpdate', handleStorageUpdate);
     handleStorageUpdate();
     return () => {
       window.removeEventListener('storageUpdate', handleStorageUpdate);
     };
-  }, [image.id]);
+  }, [image.id, username]);  
 
 const handleLike = () => {
-  let likedImages = JSON.parse(localStorage.getItem('likedImages')) || [];
+  const likedImagesKey = getLikedImagesKey();
+  let likedImages = JSON.parse(localStorage.getItem(likedImagesKey)) || [];
   // console.log('Before operation, likedImages:', likedImages); 
 
   if (!liked) {
@@ -37,7 +44,7 @@ const handleLike = () => {
     likedImages = likedImages.filter(img => img.image.id !== image.id); 
   }
 
-  localStorage.setItem('likedImages', JSON.stringify(likedImages));
+  localStorage.setItem(likedImagesKey, JSON.stringify(likedImages));
   setLiked(!liked);
   // console.log('After operation, likedImages:', likedImages); 
 }
