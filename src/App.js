@@ -8,9 +8,11 @@ import LikedPage from './components/likedPage';
 import UserData from './components/UserData';
 import Login from './components/Login';
 import { searchImages } from './api';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
 
 function App() {
+
   const [token, setToken] = useState(localStorage.getItem('token') || '');
   const [images, setImages] = useState([]);
   const [toggleDarkMode, setToggleDarkMode] = useState(true);
@@ -36,6 +38,11 @@ function App() {
     setToggleDarkMode(!toggleDarkMode);
   };
 
+  function RequireAuth({ children }) {
+    const { auth } = useAuth();
+    return auth.token ? children : <Navigate to="/login" replace />;
+}
+
   const theme = createTheme({
     palette: {
       mode: toggleDarkMode ? 'dark' : 'light',
@@ -44,14 +51,11 @@ function App() {
     },
   });
 
-  const requireAuth = (element) => {
-    return token ? element : <Navigate to="/login" replace />;
-  };
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
+      <AuthProvider>
         <Header
           onSubmit={handleSubmit}
           handleToggleTheme={toggleDarkTheme}
@@ -59,11 +63,12 @@ function App() {
           setImages={setImages} // Ensures Header can clear images
         />
          <Routes>
-          <Route path="/login" element={<Login setToken={setToken} />} />
-          <Route path="/" element={requireAuth(<MainPage images={images} searchTerm={searchTerm} onSearch={handleSubmit} onDelete={handleDelete} />)} />
-          <Route path="/liked" element={requireAuth(<LikedPage />)} />
-          <Route path="/user-data" element={requireAuth(<UserData />)} />
+         <Route path="/login" element={<Login />} />
+            <Route path="/" element={<RequireAuth><MainPage images={images} searchTerm={searchTerm} onSearch={handleSubmit} onDelete={handleDelete} /></RequireAuth>} />
+            <Route path="/liked" element={<RequireAuth><LikedPage /></RequireAuth>} />
+            <Route path="/user-data" element={<RequireAuth><UserData /></RequireAuth>} />
         </Routes>
+        </AuthProvider>
       </Router> 
     </ThemeProvider>
   );

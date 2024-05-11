@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useEffect, useState } from 'react';
-
+import { useAuth } from '../context/AuthContext';
 
 
 const HomeIcon = createSvgIcon(
@@ -27,6 +27,7 @@ export default function TemporaryDrawer() {
   const [open, setOpen] = React.useState(false);
   const history = useNavigate();
   const [username, setUsername] = useState(localStorage.getItem('username'));
+  const { auth, logout } = useAuth();
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
@@ -46,25 +47,23 @@ export default function TemporaryDrawer() {
   }, []);
 
   const handleListItemClick = (text) => {
-    if (text === 'Liked') {
-      history('/liked');
-    } else if (text === 'Main') {
-        history('/');
+    if (!auth.token) {
+        history('/login');
+    } else {
+        history(text === 'Liked' ? '/liked' : '/');
     }
-  };
+};
 
-  const handleLogout = () => {
-    localStorage.removeItem('token'); 
-    localStorage.removeItem('username');
-    history('/login'); 
-  };
-
+const handleLogout = () => {
+  logout();
+  history('/login');
+};
 
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
       <List>
       <ListItem>
-        <ListItemText primary={`Logged in as: ${username || 'Not logged in'}`} />
+        <ListItemText primary={`Logged in as: ${auth.username || 'Not logged in'}`} />
         </ListItem>
         {['Main', 'Liked'].map((text, index) => (
           <ListItem key={text} disablePadding>
