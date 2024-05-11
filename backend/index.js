@@ -2,13 +2,17 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 require('dotenv').config();  
-
 const app = express();
 app.use(express.json());
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger/swaggerConfig');
+
 
 app.use(cors({
     origin: 'http://localhost:3000' 
   }));
+
+
 
 const users = {
     'admin': { password: 'admin', role: 'ADMIN' },
@@ -24,25 +28,57 @@ app.use(cors());
 // Middleware to authenticate JWT
 function authenticateToken(req, res, next) {
     const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(' ')[1]; // Extract token from Bearer
+    const token = authHeader && authHeader.split(' ')[1]; 
 
     if (!token) {
-        return res.sendStatus(401);  // No token provided
+        return res.sendStatus(401);  
     }
 
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) {
-            return res.sendStatus(403);  // Token verification failed
+            return res.sendStatus(403);  
         }
         req.user = user;  
         next(); 
     });
 }
 
-// Route to generate token
+/**
+ * @swagger
+ * /token:
+ *   post:
+ *     summary: Generate a token based on user role
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               role:
+ *                 type: string
+ *                 description: The role of the user (ADMIN or VISITOR)
+ *     responses:
+ *       200:
+ *         description: Successfully generated token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   description: JWT for authenticated access
+ *       400:
+ *         description: Invalid role provided
+ *       403:
+ *         description: Unauthorized access attempt
+ */
+
 app.post('/token', (req, res) => {
-    console.log("Headers:", req.headers); // Log headers to check content-type
-    console.log("Received body:", req.body); // This will show what is received in the request body
+    console.log("Headers:", req.headers); 
+    console.log("Received body:", req.body); 
 
     const { role } = req.body;
     const permissions = {
@@ -65,7 +101,29 @@ app.post('/token', (req, res) => {
     res.json({ token });
 });
 
-// Protected route
+/**
+ * @swagger
+ * /data:
+ *   get:
+ *     summary: Access protected data
+ *     tags: [Data Access]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully accessed data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: string
+ *                   description: Protected data content
+ *       403:
+ *         description: Forbidden, credentials are not valid for this resource
+ */
+
 app.get('/data', authenticateToken, (req, res) => {
     if (!req.user || !req.user.permissions || !req.user.permissions.includes("READ")) {
         return res.sendStatus(403);  // Forbidden: User does not have READ permission
@@ -79,7 +137,32 @@ app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
 
-
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Logs in a user
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User successfully logged in
+ *       401:
+ *         description: Unauthorized
+ */
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
     const user = users[username];
@@ -101,6 +184,33 @@ app.post('/login', (req, res) => {
 });
 
 
+/**
+ * @swagger
+ * /user-data:
+ *   get:
+ *     summary: Get user data based on the provided token
+ *     tags: [User Info]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User data retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 username:
+ *                   type: string
+ *                 role:
+ *                   type: string
+ *                 permissions:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *       403:
+ *         description: Access Forbidden
+ */
 
 app.get('/user-data', authenticateToken, (req, res) => {
     if (!req.user) {
@@ -109,5 +219,10 @@ app.get('/user-data', authenticateToken, (req, res) => {
         res.json({ username: req.user.username, role: req.user.role, permissions: req.user.permissions });
     }
 });
+
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+
 
 
