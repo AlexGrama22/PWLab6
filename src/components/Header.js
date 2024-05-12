@@ -6,16 +6,14 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import InputBase from '@mui/material/InputBase';
-import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
-import SearchBar from './SearchBar';
-import { Card, CardContent, CardMedia, Switch, Typography } from "@mui/material"
+import { Typography } from "@mui/material"
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import Drawer from './Drawer';
-import { BrowserRouter as Router } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import Hidden from '@mui/material/Hidden';
+import { useAuth } from '../context/AuthContext';
 
 const Search = styled('form')(({ theme }) => ({
   position: 'relative',
@@ -65,6 +63,7 @@ export default function SearchAppBar({ onSubmit, toggleTheme, handleToggleTheme,
     const [term, setTerm] = useState('');
     const theme = useTheme();
     const location = useLocation();
+    const { auth } = useAuth();
 
     const handleFormSubmit = (event) => {
       event.preventDefault();
@@ -99,7 +98,7 @@ export default function SearchAppBar({ onSubmit, toggleTheme, handleToggleTheme,
           <IconButton sx={{ ml: 1 }} onClick={handleToggleTheme} color="inherit">
             {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
           </IconButton>
-          {location.pathname !== '/liked' && (
+          {auth.token && location.pathname !== '/liked' && (
             <Search onSubmit={handleFormSubmit}>
               <SearchIconWrapper>
                 <SearchIcon />

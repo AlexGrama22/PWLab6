@@ -1,19 +1,20 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
 import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
 import { createSvgIcon } from '@mui/material/utils';
 import { useNavigate } from 'react-router-dom';
+import Button from '@mui/material/Button';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import { useEffect, useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 
 
 const HomeIcon = createSvgIcon(
@@ -25,23 +26,45 @@ export default function TemporaryDrawer() {
 
   const [open, setOpen] = React.useState(false);
   const history = useNavigate();
+  const [username, setUsername] = useState(localStorage.getItem('username'));
+  const { auth, logout } = useAuth();
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
 
-  const handleListItemClick = (text) => {
-    if (text === 'Liked') {
-      history('/liked');
-    } else if (text === 'Main') {
-        history('/');
-    }
-  };
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const updatedUsername = localStorage.getItem('username');
+      setUsername(updatedUsername);
+    };
+  
+    window.addEventListener('storage', handleStorageChange);
+  
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
+  const handleListItemClick = (text) => {
+    if (!auth.token) {
+        history('/login');
+    } else {
+        history(text === 'Liked' ? '/liked' : '/');
+    }
+};
+
+const handleLogout = () => {
+  logout();
+  history('/login');
+};
 
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
       <List>
+      <ListItem>
+        <ListItemText primary={`Logged in as: ${auth.username || 'Not logged in'}`} />
+        </ListItem>
         {['Main', 'Liked'].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton onClick={() => handleListItemClick(text)}>
@@ -52,6 +75,17 @@ export default function TemporaryDrawer() {
             </ListItemButton>
           </ListItem>
         ))}
+         <ListItem>
+          <Button
+            startIcon={<ExitToAppIcon />}
+            onClick={handleLogout}
+            fullWidth
+            variant="outlined"
+            color="secondary"
+          >
+            Logout
+          </Button>
+        </ListItem>
       </List>
       
     </Box>
