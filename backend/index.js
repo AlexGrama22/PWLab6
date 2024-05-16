@@ -125,12 +125,16 @@ app.post('/token', (req, res) => {
  */
 
 app.get('/data', authenticateToken, (req, res) => {
-    if (!req.user || !req.user.permissions || !req.user.permissions.includes("READ")) {
-        return res.sendStatus(403);  // Forbidden: User does not have READ permission
+    if (!req.user) {
+        return res.status(403).json({ error: "Your access token is invalid or has expired" });
     }
+
+    if (!req.user.permissions.includes("READ")) {
+        return res.status(403).json({ error: "You do not have permission to read this data" }); // User does not have READ permission
+    }
+
     res.json({ data: "This is protected data accessible based on permissions." });
 });
-
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
